@@ -11,6 +11,8 @@
 # example : python check_saphana_health.py --hostname sap_hana_server --username TECH_MONI --password UltraComplexPassword2020! --sqlport 30044 --mode backup
 # example : python check_saphana_health.py --hostname sap_hana_server --username TECH_MONI --password UltraComplexPassword2020! --sqlport 30044 --mode alert --timeout 600
 # example : ./check_saphana_health.sh --hostname sap_hana_server --username TECH_MONI --password UltraComplexPassword2020! --sqlport 30044 --mode alert --timeout 600
+# You can use a komma separted host list of systems in a replication cluster. The script will connect to the fist responding server in the list.
+# example : python check_saphana_health.py --hostname sap_hana_server01,sap_hana_server02 --username TECH_MONI --password UltraComplexPassword2020! --sqlport 30044 --mode backup
 #################################################
 
 
@@ -35,7 +37,7 @@ def function_check_M_SYSTEM_OVERVIEW(section,name,type):
     function_exit(resultat_0)
 
 def function_connect_to_active_system(host_list):
-
+    # test if database accept connections/ is active
     exceptions = ""
 
     for host in host_list:
