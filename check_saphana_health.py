@@ -44,8 +44,8 @@ def function_connect_to_active_system(host_list):
         try:
             connection = dbapi.connect(host, args.sqlport, args.username, args.password)
             if args.timeout != None: connection.timeout = int(args.timeout)
-            cursor = connection.cursor()
-            return cursor
+            
+            return connection
         except dbapi.Error as e:
             exceptions = exceptions + str(e)
            
@@ -66,7 +66,8 @@ if __name__ == '__main__':
 
 host_list = [host.strip() for host in args.hostname.split(',')]
 
-cursor = function_connect_to_active_system(host_list)
+connection = function_connect_to_active_system(host_list)
+cursor = connection.cursor()
 
 if args.mode == "backup_data":
     #-- last backups data since 3 days
