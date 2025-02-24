@@ -34,16 +34,19 @@ def function_check_M_SYSTEM_OVERVIEW(section,name,type):
     print ("%s - SAP HANA %s : %s " % (resultat_0,type,resultat_1))
     function_exit(resultat_0)
 
-def function_connect_to_active_system(host_list,sqlport,username,password):
+def function_connect_to_active_system(host_list):
 
     exceptions = ""
 
     for host in host_list:
         try:
-           return dbapi.connect(host, args.sqlport, username, password)
+            connection = dbapi.connect(host, args.sqlport, args.username, args.password)
+            if args.timeout != None: connection.timeout = int(args.timeout)
+            cursor = connection.cursor()
+            return cursor
         except dbapi.Error as e:
-           exceptions = exceptions + str(e)
-
+            exceptions = exceptions + str(e)
+           
     print ("CRITICAL - Host " +  ' and '.join(str(host) for host in host_list ) +  " not accessable.")
     print (exceptions)
     function_exit("CRITICAL")
@@ -61,9 +64,7 @@ if __name__ == '__main__':
 
 host_list = [host.strip() for host in args.hostname.split(',')]
 
-connection = function_connect_to_active_system(args.hostname, args.sqlport, args.username, args.password)
-if args.timeout != None: connection.timeout = int(args.timeout)
-cursor = connection.cursor()
+cursor = function_connect_to_active_system(host_list)
 
 if args.mode == "backup_data":
     #-- last backups data since 3 days
